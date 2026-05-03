@@ -9,9 +9,7 @@ JAYENE STEFANNY
 
 PROFESSOR:
 MAX MILLER DA SILVEIRA 
-
-
-
+<img width="500" height="500" alt="exokitchen-removebg-preview (1)" src="https://github.com/user-attachments/assets/12b2c714-1e89-4dc3-a8c3-546d077753c7" />
 
 Um pequeno passo para o homem, um grande passo para a exoculinária.
 
@@ -89,10 +87,14 @@ Outro obstáculo que o jogador deverá enfrentar é as falhas de tradução do T
 Exo Kitchen se passa em Ferlon, cidade mais influente e desenvolvida de Quarlob. Temos três ambientes explorados no jogo, sendo eles:
 
 O apartamento de Hoshigo em Quarlob;
+<img width="1000" height="617" alt="1000305407" src="https://github.com/user-attachments/assets/c65e3885-0008-46ae-a594-e4750f112c98" />
 
 O caminho até a lanchonete;
+<img width="1000" height="617" alt="1000305059" src="https://github.com/user-attachments/assets/668aa857-b4fc-4325-b531-289ef7253a29" />
+
 
 A lanchonete (onde começa o expediente automaticamente assim que você entrar).
+<img width="1000" height="617" alt="1000305408" src="https://github.com/user-attachments/assets/30f271e2-431b-4903-8a38-3ebaf86a9f36" />
 
 
 
@@ -101,9 +103,9 @@ Escolha dos ingredientes;
 Preparo;
 Montagem;
 
+<img width="1000" height="617" alt="1000305417" src="https://github.com/user-attachments/assets/7b6a0620-32dd-47cc-9c03-d6574bc7024d" />
 
-
-Sistema de Pontuação 
+6. Sistema de Pontuação 
 
 Em Exo Kitchen, é necessário atender o máximo de aliens em um turno de 5 minutos. 
 
@@ -137,15 +139,15 @@ Pedido errado e Entrega lenta (-10 pontos): O jogador demora para entregar, e en
 
 
 
-Sistema de vida
+7. Sistema de vida
 
 O jogador possui três chances de errar um pedido ou perder um cliente, se estas três chances se esgotarem, o jogador perde.
 
-Controles
+8. Controles
 
 Serão utilizadas as teclas WASD e as setas do teclado, como também o mouse, quando necessário. Na parte de culinária, poderá haver Quick Time Events, ou seja, o jogo pedirá para você pressionar uma tecla em um determinado momento.
 
-Fluxo do Jogo
+9. Fluxo do Jogo
 
 O jogo se inicia no apartamento de Hoshigo, lugar onde o jogador poderá explorar se sentir vontade. Em seguida, seguimos para o restaurante.
 
@@ -153,7 +155,7 @@ Durante a partida, aliens aparecem pedindo determinados pratos de comida, o impo
 
 Caso o jogador tenha um, dois, ou nenhum pedido errado, ele ganha. Caso a quantidade de pedidos errados chegue a três, o jogador perde.
 
- Regras do jogo
+ 10. Regras do jogo
 
 O jogador, em áreas que não são a lanchonete, apenas se locomove para a esquerda e para a direita. 
 
@@ -161,7 +163,7 @@ Ao entrar em contato com uma parede, haverá colisão.
 
 O mapa é limitado aos ambientes explorados do jogo.
 
- Estrutura do Projeto 
+ 11. Estrutura do Projeto 
 
 O jogo terá uma pasta principal, dividida em subpastas, como no esquema abaixo:
 
@@ -194,7 +196,7 @@ Anny Luyrara: Trilha sonora, código e assets.
 Jayene: Trilha sonora, código e assets.
 
 
- Funcionalidades Mínimas
+ 12. Funcionalidades Mínimas
 
 Na primeira versão de Exo Kitchen, deve funcionar:
 Parte da gameplay focada na culinária, com huds e controles ajustados.
@@ -206,7 +208,7 @@ Processador Intel Core i3;
 Placa de vídeo Intel HD Graphics 520;
 Sistema operacional de 64 bits, baseado em x64.
 
- Melhorias futuras
+ 13. Melhorias futuras
     Expansão do mapa;
 Expansão da história do jogo;
 Dublagem;
