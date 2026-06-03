@@ -1,7 +1,19 @@
-from personagens import Protagonistas, Hoshigo
+import pygame
 
-hoshigo = Hoshigo('Hoshigo', '01')
-print(hoshigo.cozinhando())
-print(hoshigo.pegar_tomate())
-print(hoshigo.pegar_tomate())
-print(hoshigo.pegar_tomate())
+SCREEN_HEIGHT = 500
+SCREEN_WIDTH = 800
+
+display = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("ExoKitchen")
+
+loop = True
+
+while loop:
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+    pygame.display.update()
+    
+pygame.quit()
