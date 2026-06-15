@@ -15,7 +15,7 @@ TITLE_PATH = os.path.join(BASE_PATH, "titulo.png")
 
 titulo_img = pygame.image.load(TITLE_PATH).convert_alpha()
 
-titulo_img = pygame.transform.scale(titulo_img, (550, 450))
+titulo_img = pygame.transform.scale(titulo_img, (540, 455))
 
 titulo_rect = titulo_img.get_rect(center=(SCREEN_WIDTH // 2, 180))
 
@@ -37,14 +37,20 @@ class Botao:
     def clicado(self, pos):
         return self.rect.collidepoint(pos)
 
-botao_jogar   = Botao(300, 300, 200, 60, "Jogar",    os.path.join(BASE_PATH, "botão_jogar.png"))
-botao_creditos = Botao(300, 370, 200, 60, "Créditos", os.path.join(BASE_PATH, "botão_créditos.png"))
-botao_sair    = Botao(300, 440, 200, 60, "Sair",     os.path.join(BASE_PATH, "botão_sair.png"))
+botao_jogar   = Botao(300, 250, 200, 75, "Jogar",    os.path.join(BASE_PATH, "botão_jogar.png"))
+botao_creditos = Botao(300, 335, 200, 75, "Créditos", os.path.join(BASE_PATH, "botão_créditos.png"))
+botao_sair    = Botao(300, 420, 200, 75, "Sair",     os.path.join(BASE_PATH, "botão_sair.png"))
 
 running = True
 
 while running:
     display.fill((240, 240, 240))
+
+
+    display.blit(titulo_img, titulo_rect)
+    botao_jogar.desenhar(display)
+    botao_creditos.desenhar(display)
+    botao_sair.desenhar(display)
 
     for event in pygame.event.get():
 
@@ -64,5 +70,3 @@ while running:
                 running = False
 
     pygame.display.update()
-
-pygame.quit()
