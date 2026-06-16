@@ -1,5 +1,6 @@
 ﻿import os
 import pygame
+import math
 
 pygame.init()
 
@@ -18,6 +19,31 @@ titulo_img = pygame.image.load(TITLE_PATH).convert_alpha()
 titulo_img = pygame.transform.scale(titulo_img, (540, 455))
 
 titulo_rect = titulo_img.get_rect(center=(SCREEN_WIDTH // 2, 180))
+
+BG_PATH = os.path.join(BASE_PATH, "background.png")
+
+class Fundo:
+    def __init__ (self, x, y, bg_path):
+        self.rect = pygame.Rect(x, y)
+        self.bg = self.carrega_fundo(bg_path)
+
+    def carrega_fundo(self, path):
+
+        img = pygame.image.load(BG_PATH).convert_alpha
+        img_x = img.get_width()
+        img_rect = img.get_rect()
+        tiles = math.ceil(SCREEN_WIDTH / img_x)  
+        scroll = 0
+        for i in range(0, tiles):
+            display.blit(img, (i * img_x + scroll, 0))
+        return pygame.transform.scale(img, (self.rect.x, self.rect.y))
+
+        
+
+
+    def scroll(self, bg, rect):  
+         scroll -= 5
+
 
 
 class Botao:
