@@ -1,6 +1,6 @@
 import pygame
 
-
+# classe abstrata
 class Protagonistas:
     def __init__(self, nome, id, x, y, cor=(0, 150, 255)):
         self.nome = nome
