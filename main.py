@@ -1,6 +1,7 @@
 import pygame
+import sys
 
-from personagens import Hoshigo
+from personagens import Hoshigo, Carlo
 from mapa import Mapa
 from inimigos import AlienCalmo
 from pedidos import Pedido
@@ -8,352 +9,152 @@ from cozinha import Cozinha
 from hud import HUD
 
 
-
-def iniciar_jogo():
-
-    # ==========================================
-    # INICIALIZAÇÃO
-    # ==========================================
-
+def main():
     pygame.init()
+    pygame.font.init()
 
+    LARGURA, ALTURA = 800, 500
+    tela = pygame.display.set_mode((LARGURA, ALTURA))
+    pygame.display.set_caption("Exo Kitchen - Hoshigo & Carlo")
 
-    LARGURA = 800
-    ALTURA = 500
-
-
-    TELA = pygame.display.set_mode(
-        (LARGURA, ALTURA)
-    )
-
-    pygame.display.set_caption(
-        "Exo Kitchen"
-    )
-
-
-    clock = pygame.time.Clock()
-
+    relogio = pygame.time.Clock()
     FPS = 60
+    fonte = pygame.font.SysFont("arial", 16, bold=True)
 
-
-
-    # ==========================================
-    # OBJETOS
-    # ==========================================
-
+    # Instanciando o Mapa, Cozinha, HUD e Alien
     mapa = Mapa()
-
-
-    jogador = Hoshigo(
-        100,
-        250
-    )
-
-
-    alien = AlienCalmo(
-        "Zorblax",
-        700,
-        90
-    )
-
-
-    pedido = Pedido()
-
-    pedido.gerar_pedido()
-
-
-
     cozinha = Cozinha()
-
-
     hud = HUD()
+    alien = AlienCalmo("Zorblax", 700, 90)
 
+    # Instanciando os Protagonistas
+    hoshigo = Hoshigo(x=150, y=250)
+    carlo = Carlo(x=220, y=250)
+    jogadores = [hoshigo, carlo]
 
+    # Pedidos ativos
+    pedidos_ativos = [Pedido(), Pedido()]
+    for p in pedidos_ativos:
+        p.gerar_pedido()
 
     tempo = 300
-
-
-    fonte = pygame.font.SysFont(
-        "Arial",
-        20
-    )
-
-
     mensagem = ""
 
-
-
-    # Controle de teclas
-
-    e_pressionado = False
-
-    f_pressionado = False
-
-
-
-    # ==========================================
-    # LOOP DO JOGO
-    # ==========================================
+    # Controle de acionamento único de teclas (debouncing)
+    teclas_anteriores = {}
 
     rodando = True
-
-
     while rodando:
+        relogio.tick(FPS)
 
-
-        clock.tick(FPS)
-
-
-
-        # ======================================
-        # EVENTOS
-        # ======================================
-
-        for event in pygame.event.get():
-
-
-            if event.type == pygame.QUIT:
-
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
                 rodando = False
-
-
 
         teclas = pygame.key.get_pressed()
 
+        # 1. Movimentação dos dois jogadores
+        hoshigo.mover()
+        carlo.mover()
 
+        # Opcional: Colisão com obstáculos do mapa (se o mapa possuir essa função)
+        if hasattr(mapa, "colisao"):
+            mapa.colisao(hoshigo)
+            mapa.colisao(carlo)
 
-        # ======================================
-        # JOGADOR
-        # ======================================
+        # 2. Atualizar Alien e Tempo
+        if hasattr(alien, "atualizar"):
+            alien.atualizar()
 
-        jogador.mover()
-
-
-        mapa.colisao(
-            jogador
-        )
-
-
-
-        # ======================================
-        # ALIEN
-        # ======================================
-
-        alien.atualizar()
-
-
-
-        # ======================================
-        # TEMPO
-        # ======================================
-
-        tempo -= 1 / FPS
-
-
+        tempo -= 5 / FPS
         if tempo < 0:
-
             tempo = 0
-
-
 
         mensagem = ""
 
-
-
-        # ======================================
-        # PEGAR INGREDIENTES
-        # ======================================
-
-
-        pegar = False
-
-
-        if teclas[pygame.K_e] and not e_pressionado:
-
-            pegar = True
-
-
-        e_pressionado = teclas[pygame.K_e]
-
-
-
+        # Mapeamento dos ingredientes do mapa
         ingredientes = [
-
-            ("Tomate", mapa.tomate),
-
-            ("Queijo", mapa.queijo),
-
-            ("Carne", mapa.carne),
-
-            ("Pão", mapa.pao),
-
-            ("Massa", mapa.massa)
-
+            ("Tomate", getattr(mapa, "tomate", None)),
+            ("Queijo", getattr(mapa, "queijo", None)),
+            ("Carne", getattr(mapa, "carne", None)),
+            ("Pão", getattr(mapa, "pao", None)),
+            ("Massa", getattr(mapa, "massa", None))
         ]
 
+        # 3. Interação de Pegar Ingredientes
+        for jog in jogadores:
+            tecla_pegar = jog.controles["pegar"]
+            pegar_pressionado = teclas[tecla_pegar] and not teclas_anteriores.get(tecla_pegar, False)
 
+            for nome, obj in ingredientes:
+                if obj and jog.rect.colliderect(obj):
+                    nome_tecla = pygame.key.name(tecla_pegar).upper()
+                    mensagem = f"{jog.nome}: Aperte [{nome_tecla}] para pegar {nome}"
 
-        for nome, objeto in ingredientes:
+                    if pegar_pressionado:
+                        cozinha.adicionar_ingrediente(nome)
 
+        # 4. Interação de Entregar Prato ao Alien
+        for jog in jogadores:
+            tecla_entregar = jog.controles["entregar"]
+            entregar_pressionado = teclas[tecla_entregar] and not teclas_anteriores.get(tecla_entregar, False)
 
-            if jogador.rect.colliderect(
-                objeto
-            ):
+            if jog.rect.colliderect(alien.rect):
+                nome_tecla = pygame.key.name(tecla_entregar).upper()
+                mensagem = f"{jog.nome}: Aperte [{nome_tecla}] para entregar o prato"
 
+                if entregar_pressionado:
+                    prato = cozinha.entregar()
+                    pedido_concluido = None
 
-                mensagem = (
-                    f"Pressione E para pegar {nome}"
-                )
+                    for p in pedidos_ativos:
+                        if p.verificar(prato):
+                            pedido_concluido = p
+                            break
 
+                    if pedido_concluido:
+                        jog.pontos += 20
+                        if hasattr(alien, "reagir"):
+                            alien.reagir()
+                        pedido_concluido.novo_pedido()
+                    else:
+                        jog.vidas -= 1
 
-                if pegar:
+        # Guardar estado atual das teclas para controlar o aperto único
+        for jog in jogadores:
+            teclas_anteriores[jog.controles["pegar"]] = teclas[jog.controles["pegar"]]
+            teclas_anteriores[jog.controles["entregar"]] = teclas[jog.controles["entregar"]]
 
-                    cozinha.adicionar_ingrediente(
-                        nome
-                    )
+        # 5. Desenhar Tela
+        mapa.desenhar(tela)
+        if hasattr(alien, "desenhar"):
+            alien.desenhar(tela)
 
+        # Desenha Hoshigo e Carlo
+        hoshigo.desenhar(tela, fonte)
+        carlo.desenhar(tela, fonte)
 
-
-        # ======================================
-        # ENTREGAR PEDIDO
-        # ======================================
-
-
-        entregar = False
-
-
-        if teclas[pygame.K_f] and not f_pressionado:
-
-            entregar = True
-
-
-        f_pressionado = teclas[pygame.K_f]
-
-
-
-        if jogador.rect.colliderect(
-            alien.rect
-        ):
-
-
-            mensagem = (
-                "Pressione F para entregar"
-            )
-
-
-
-            if entregar:
-
-
-                prato = cozinha.entregar()
-
-
-
-                if pedido.verificar(
-                    prato
-                ):
-
-
-                    jogador.adicionar_pontos(
-                        20
-                    )
-
-
-                    alien.reagir()
-
-
-                    print(
-                        "Pedido correto!"
-                    )
-
-
-                else:
-
-
-                    jogador.perder_vida()
-
-
-                    print(
-                        "Pedido errado!"
-                    )
-
-
-
-                pedido.novo_pedido()
-
-
-
-        # ======================================
-        # DESENHO
-        # ======================================
-
-        mapa.desenhar(
-            TELA
-        )
-
-
-        alien.desenhar(
-            TELA
-        )
-
-
-        jogador.desenhar(
-            TELA
-        )
-
-
-
+        # HUD (Mostra a pontuação de Hoshigo/Carlo e receitas)
         hud.desenhar(
-            TELA,
-            jogador,
+            tela,
+            hoshigo,
             alien,
-            pedido,
+            pedidos_ativos,
             tempo,
             cozinha
         )
 
-
-
-        # ======================================
-        # MENSAGEM
-        # ======================================
-
+        # Exibir Mensagens de Ajuda na Parte Inferior
         if mensagem != "":
-
-
-            pygame.draw.rect(
-                TELA,
-                (0,0,0),
-                (200,455,400,30)
-            )
-
-
-            texto = fonte.render(
-                mensagem,
-                True,
-                (255,255,255)
-            )
-
-
-            TELA.blit(
-                texto,
-                (215,460)
-            )
-
-
+            pygame.draw.rect(tela, (0, 0, 0), (180, 460, 440, 30), border_radius=5)
+            txt_surface = fonte.render(mensagem, True, (255, 255, 255))
+            tela.blit(txt_surface, (190, 465))
 
         pygame.display.flip()
 
-
-
     pygame.quit()
-
-
-
-
-
+    sys.exit()
 
 
 if __name__ == "__main__":
-
-    iniciar_jogo()
+    main()

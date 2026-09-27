@@ -1,224 +1,100 @@
 import pygame
 
-# classe abstrata
+# classe abstrata 
 class Protagonistas:
-    def __init__(self, nome, id, x, y, cor=(0, 150, 255)):
+    def __init__(self, nome, id, x, y, cor=(0, 150, 255), controles=None):
         self.nome = nome
         self.id = id
 
-        # Posição
-        self.x = x
-        self.y = y
+        # Posição e tamanho
+        self.largura = 40
+        self.altura = 50
+        self.rect = pygame.Rect(x, y, self.largura, self.altura)
 
-        # Tamanho
-        self.largura = 50
-        self.altura = 70
-
-        # Retângulo do personagem
-        self.rect = pygame.Rect(
-            self.x,
-            self.y,
-            self.largura,
-            self.altura
-        )
-
-        # Aparência temporária
         self.cor = cor
 
-        # Atributos
+        # Teclas de movimentação e ação padrão
+        self.controles = controles or {
+            "cima": pygame.K_UP,
+            "baixo": pygame.K_DOWN,
+            "esquerda": pygame.K_LEFT,
+            "direita": pygame.K_RIGHT,
+            "pegar": pygame.K_k,
+            "entregar": pygame.K_l
+        }
+
         self.velocidade = 5
         self.vidas = 3
         self.pontos = 0
 
-        # Ingredientes
-        self.tomates = 10
-        self.queijos = 10
-        self.carnes = 10
-        self.paes = 10
-
-    # ------------------------
-    # MOVIMENTAÇÃO
-    # ------------------------
-
     def mover(self):
-
         teclas = pygame.key.get_pressed()
 
-        if teclas[pygame.K_a] or teclas[pygame.K_LEFT]:
+        if teclas[self.controles["esquerda"]]:
             self.rect.x -= self.velocidade
-
-        if teclas[pygame.K_d] or teclas[pygame.K_RIGHT]:
+        if teclas[self.controles["direita"]]:
             self.rect.x += self.velocidade
-
-        if teclas[pygame.K_w] or teclas[pygame.K_UP]:
+        if teclas[self.controles["cima"]]:
             self.rect.y -= self.velocidade
-
-        if teclas[pygame.K_s] or teclas[pygame.K_DOWN]:
+        if teclas[self.controles["baixo"]]:
             self.rect.y += self.velocidade
 
         self.colisao()
 
     def colisao(self):
-
         if self.rect.left < 0:
             self.rect.left = 0
-
         if self.rect.right > 800:
             self.rect.right = 800
-
         if self.rect.top < 0:
             self.rect.top = 0
-
         if self.rect.bottom > 500:
             self.rect.bottom = 500
 
-    # ------------------------
-    # DESENHO
-    # ------------------------
+    def desenhar(self, tela, fonte):
+        # Desenha o personagem
+        pygame.draw.rect(tela, self.cor, self.rect, border_radius=8)
 
-    def desenhar(self, tela):
+        # Desenha o nome em cima
+        texto = fonte.render(self.nome, True, (255, 255, 255))
+        pos_x = self.rect.x + (self.largura // 2) - (texto.get_width() // 2)
+        pos_y = self.rect.y - 20
+        tela.blit(texto, (pos_x, pos_y))
 
-        pygame.draw.rect(
-            tela,
-            self.cor,
-            self.rect,
-            border_radius=8
-        )
-
-    # ------------------------
-    # PONTUAÇÃO
-    # ------------------------
-
-    def adicionar_pontos(self, quantidade):
-
-        self.pontos += quantidade
-
-    def perder_pontos(self, quantidade):
-
-        self.pontos -= quantidade
-
-        if self.pontos < 0:
-            self.pontos = 0
-
-    # ------------------------
-    # VIDAS
-    # ------------------------
-
-    def perder_vida(self):
-
-        if self.vidas > 0:
-            self.vidas -= 1
-
-    def ganhar_vida(self):
-
-        self.vidas += 1
-
-    # ------------------------
-    # INGREDIENTES
-    # ------------------------
-
-    def pegar_tomate(self):
-
-        if self.tomates > 0:
-            self.tomates -= 1
-            return True
-
-        return False
-
-    def pegar_queijo(self):
-
-        if self.queijos > 0:
-            self.queijos -= 1
-            return True
-
-        return False
-
-    def pegar_carne(self):
-
-        if self.carnes > 0:
-            self.carnes -= 1
-            return True
-
-        return False
-
-    def pegar_pao(self):
-
-        if self.paes > 0:
-            self.paes -= 1
-            return True
-
-        return False
-
-    # ------------------------
-    # STATUS
-    # ------------------------
-
-    def mostrar_status(self):
-
-        print("========== STATUS ==========")
-        print(f"Nome: {self.nome}")
-        print(f"Pontos: {self.pontos}")
-        print(f"Vidas: {self.vidas}")
-        print(f"Tomates: {self.tomates}")
-        print(f"Queijos: {self.queijos}")
-        print(f"Carnes: {self.carnes}")
-        print(f"Pães: {self.paes}")
-        print("============================")
-
-
-# ==========================================
-# HOSHIGO
-# ==========================================
 
 class Hoshigo(Protagonistas):
-
     def __init__(self, x, y):
-
         super().__init__(
             nome="Hoshigo",
             id=1,
             x=x,
             y=y,
-            cor=(60, 170, 255)
+            cor=(60, 170, 255),
+            controles={
+                "cima": pygame.K_w,
+                "baixo": pygame.K_s,
+                "esquerda": pygame.K_a,
+                "direita": pygame.K_d,
+                "pegar": pygame.K_e,      # Tecla E para pegar
+                "entregar": pygame.K_f   # Tecla F para entregar
+            }
         )
 
-    def cozinhar(self):
-
-        print(f"{self.nome} começou a cozinhar.")
-
-    def entregar_pedido(self):
-
-        print(f"{self.nome} entregou o pedido.")
-
-    def falar(self):
-
-        print("Vamos salvar a humanidade!")
-
-
-# ==========================================
-# CARLO
-# ==========================================
 
 class Carlo(Protagonistas):
-
     def __init__(self, x, y):
-
         super().__init__(
             nome="Carlo",
             id=2,
             x=x,
             y=y,
-            cor=(255, 170, 50)
+            cor=(255, 170, 50),
+            controles={
+                "cima": pygame.K_UP,
+                "baixo": pygame.K_DOWN,
+                "esquerda": pygame.K_LEFT,
+                "direita": pygame.K_RIGHT,
+                "pegar": pygame.K_k,      # Tecla K para pegar
+                "entregar": pygame.K_l   # Tecla L para entregar
+            }
         )
-
-    def cozinhar(self):
-
-        print(f"{self.nome} está preparando um prato.")
-
-    def entregar_pedido(self):
-
-        print(f"{self.nome} entregou o pedido.")
-
-    def falar(self):
-
-        print("Hora de trabalhar!")
