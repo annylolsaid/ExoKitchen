@@ -17,7 +17,6 @@ sys.path.append(
 import main
 
 
-
 # ==========================================
 # INICIALIZAÇÃO
 # ==========================================
@@ -38,7 +37,6 @@ pygame.display.set_caption(
 )
 
 
-
 # ==========================================
 # CAMINHO DOS ARQUIVOS
 # ==========================================
@@ -46,7 +44,6 @@ pygame.display.set_caption(
 BASE_PATH = os.path.dirname(
     os.path.abspath(__file__)
 )
-
 
 
 # ==========================================
@@ -58,12 +55,10 @@ TITLE_PATH = os.path.join(
     "titulo.png"
 )
 
-
 BG_PATH = os.path.join(
     BASE_PATH,
     "background.png"
 )
-
 
 
 titulo_img = pygame.image.load(
@@ -73,7 +68,7 @@ titulo_img = pygame.image.load(
 
 titulo_img = pygame.transform.scale(
     titulo_img,
-    (540,455)
+    (540, 455)
 )
 
 
@@ -85,13 +80,11 @@ titulo_rect = titulo_img.get_rect(
 )
 
 
-
 # ==========================================
 # FUNDO ANIMADO
 # ==========================================
 
 class Fundo:
-
 
     def __init__(self, bg_path):
 
@@ -99,28 +92,22 @@ class Fundo:
             bg_path
         ).convert_alpha()
 
-
         self.img_x = self.bg.get_width()
-
 
         self.tiles = math.ceil(
             SCREEN_WIDTH / self.img_x
         ) + 1
 
-
         self.scroll = 0
-
 
 
     def atualizar(self):
 
         self.scroll -= 0.5
 
-
         if self.scroll <= -self.img_x:
 
             self.scroll = 0
-
 
 
     def desenhar(self, superficie):
@@ -136,14 +123,11 @@ class Fundo:
             )
 
 
-
-
 # ==========================================
 # BOTÕES
 # ==========================================
 
 class Botao:
-
 
     def __init__(
         self,
@@ -161,11 +145,9 @@ class Botao:
             altura
         )
 
-
         self.sprite = pygame.image.load(
             sprite_path
         ).convert_alpha()
-
 
         self.sprite = pygame.transform.scale(
             self.sprite,
@@ -176,7 +158,6 @@ class Botao:
         )
 
 
-
     def desenhar(self, superficie):
 
         superficie.blit(
@@ -185,14 +166,11 @@ class Botao:
         )
 
 
-
-    def clicado(self,pos):
+    def clicado(self, pos):
 
         return self.rect.collidepoint(
             pos
         )
-
-
 
 
 # ==========================================
@@ -202,7 +180,6 @@ class Botao:
 fundo = Fundo(
     BG_PATH
 )
-
 
 
 botao_jogar = Botao(
@@ -217,7 +194,6 @@ botao_jogar = Botao(
 )
 
 
-
 botao_creditos = Botao(
     300,
     335,
@@ -228,7 +204,6 @@ botao_creditos = Botao(
         "botão_créditos.png"
     )
 )
-
 
 
 botao_sair = Botao(
@@ -243,8 +218,6 @@ botao_sair = Botao(
 )
 
 
-
-
 # ==========================================
 # MENU
 # ==========================================
@@ -252,17 +225,27 @@ botao_sair = Botao(
 running = True
 
 
-
 while running:
 
+    # ======================================
+    # ATUALIZAR FUNDO
+    # ======================================
 
     fundo.atualizar()
 
+
+    # ======================================
+    # DESENHAR FUNDO
+    # ======================================
 
     fundo.desenhar(
         display
     )
 
+
+    # ======================================
+    # DESENHAR TÍTULO
+    # ======================================
 
     display.blit(
         titulo_img,
@@ -270,69 +253,92 @@ while running:
     )
 
 
+    # ======================================
+    # DESENHAR BOTÕES
+    # ======================================
+
     botao_jogar.desenhar(
         display
     )
 
-
     botao_creditos.desenhar(
         display
     )
-
 
     botao_sair.desenhar(
         display
     )
 
 
+    # ======================================
+    # EVENTOS
+    # ======================================
 
     for event in pygame.event.get():
 
+        # ------------------------------
+        # FECHAR JANELA
+        # ------------------------------
 
         if event.type == pygame.QUIT:
 
             running = False
 
 
+        # ------------------------------
+        # CLIQUE DO MOUSE
+        # ------------------------------
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN:
 
+            # ==========================
+            # BOTÃO JOGAR
+            # ==========================
 
             if botao_jogar.clicado(
                 event.pos
             ):
 
-
                 running = False
 
+                # CORREÇÃO:
+                # antes estava main.iniciar_jogo()
+                main.main()
 
-                main.iniciar_jogo()
 
-
+            # ==========================
+            # BOTÃO CRÉDITOS
+            # ==========================
 
             elif botao_creditos.clicado(
                 event.pos
             ):
-
 
                 print(
                     "Desenvolvido pela ExoTeam"
                 )
 
 
+            # ==========================
+            # BOTÃO SAIR
+            # ==========================
 
             elif botao_sair.clicado(
                 event.pos
             ):
 
-
                 running = False
 
 
-
+    # ======================================
+    # ATUALIZAR TELA
+    # ======================================
 
     pygame.display.update()
 
 
+# ==========================================
+# ENCERRAR PYGAME
+# ==========================================
 
 pygame.quit()
