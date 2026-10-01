@@ -34,7 +34,7 @@ class HUD:
         tela,
         jogador,
         alien,
-        pedido,
+        pedidos,  # Alterado para aceitar a lista de pedidos
         tempo,
         cozinha
     ):
@@ -117,75 +117,52 @@ class HUD:
 
             tela.blit(
                 cliente,
-                (500, 10)
+                (260, 40)
             )
 
 
 
         # ==================================================
-        # PEDIDO
+        # PEDIDOS (SUPORTA MÚLTIPLOS PEDIDOS)
         # ==================================================
 
+        # Caixinha cinza para abrigar os pedidos
         pygame.draw.rect(
             tela,
             (60, 60, 60),
-            (500, 35, 280, 55)
+            (450, 10, 335, 75)
         )
 
+        # Garante tratamento correto se for lista ou pedido único
+        lista_pedidos = pedidos if isinstance(pedidos, list) else [pedidos]
 
-        titulo = self.fonte.render(
-            "Pedido:",
-            True,
-            self.AMARELO
-        )
+        y_pos = 15
 
+        for i, p in enumerate(lista_pedidos):
 
-        tela.blit(
-            titulo,
-            (510, 40)
-        )
+            if hasattr(p, "prato_atual") and p.prato_atual:
 
+                nome_prato = p.prato_atual["nome"]
+                ingredientes_str = ", ".join(p.prato_atual["ingredientes"])
 
+                texto_pedido = self.fonte.render(
+                    f"P{i+1}: {nome_prato} ({ingredientes_str})",
+                    True,
+                    self.AMARELO if i == 0 else self.BRANCO
+                )
 
-        if pedido.prato_atual:
+                tela.blit(
+                    texto_pedido,
+                    (455, y_pos)
+                )
 
-
-            nome = self.fonte.render(
-                pedido.prato_atual["nome"],
-                True,
-                self.BRANCO
-            )
-
-
-            tela.blit(
-                nome,
-                (580, 40)
-            )
-
-
-
-            ingredientes = self.fonte.render(
-                ", ".join(
-                    pedido.prato_atual["ingredientes"]
-                ),
-                True,
-                self.AMARELO
-            )
-
-
-            tela.blit(
-                ingredientes,
-                (510, 65)
-            )
+                y_pos += 30
 
 
 
         # ==================================================
         # PRATO DO JOGADOR
         # ==================================================
-
-        # Agora fica no canto inferior direito
-        # para não cobrir os ingredientes
 
         pygame.draw.rect(
             tela,
