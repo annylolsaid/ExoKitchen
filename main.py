@@ -295,7 +295,8 @@ def iniciar_jogo():
 
 
         jogador.desenhar(
-            TELA
+            TELA,
+            fonte
         )
 
 

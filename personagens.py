@@ -51,6 +51,13 @@ class Protagonistas:
         if self.rect.bottom > 500:
             self.rect.bottom = 500
 
+    def adicionar_pontos(self, pontos):
+        self.pontos += pontos
+
+    def perder_vida(self):
+        if self.vidas > 0:
+            self.vidas -= 1
+
     def desenhar(self, tela, fonte):
         # Desenha o personagem
         pygame.draw.rect(tela, self.cor, self.rect, border_radius=8)
