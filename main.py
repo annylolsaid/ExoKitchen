@@ -128,6 +128,9 @@ def iniciar_jogo():
 
         jogador.mover()
 
+        # Sprite com prato enquanto houver ingrediente no prato
+        jogador.com_prato = len(cozinha.mostrar_prato()) > 0
+
 
         mapa.colisao(
             jogador
